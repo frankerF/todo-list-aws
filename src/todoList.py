@@ -9,30 +9,39 @@ from botocore.exceptions import ClientError
 
 def get_table(dynamodb=None):
     if not dynamodb:
-        URL = os.environ['ENDPOINT_OVERRIDE'] #Recoge la url desde localEnvironment.json
+        # Recoge la url desde localEnvironment.json
+        URL = os.environ['ENDPOINT_OVERRIDE']
         if URL:
             print('URL dynamoDB:'+URL)
-            boto3.client = functools.partial(boto3.client, endpoint_url=URL) #fija el parámetro endpoint_url cuando se llame a boto3.client para no tener que pasársela cada vez
+            # fija el parámetro endpoint_url cuando se llame a boto3.client
+            # para no tener que pasársela cada vez
+            boto3.client = functools.partial(boto3.client, endpoint_url=URL)
+            # fija la url cuando se llame a boto3.resource
             boto3.resource = functools.partial(boto3.resource,
-                                               endpoint_url=URL)  #fija la url cuando se llame a boto3.resource 
+                                               endpoint_url=URL)
         dynamodb = boto3.resource("dynamodb")
     # fetch todo from the database
-    table = dynamodb.Table(os.environ['DYNAMODB_TABLE']) #Recoge la tabla especificada en localEnvironment.json
+    # Recoge la tabla especificada en localEnvironment.json
+    table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
     return table
 
 
 def get_item(key, dynamodb=None):
-    table = get_table(dynamodb) #Obtiene la tabla "local-TodosDynamoDbTable"
-    try: #Recoge el item solicitado por parámetro.
+    # Obtiene la tabla "local-TodosDynamoDbTable"
+    table = get_table(dynamodb)
+    try:
+        # Recoge el item solicitado por parámetro.
         result = table.get_item(
             Key={
                 'id': key
             }
         )
 
-    except ClientError as e: #Si casca devuelve el error.
+    # Si casca devuelve el error.
+    except ClientError as e:
         print(e.response['Error']['Message'])
-    else: #Si va todo bien, devuelve el json resultante de la consulta.
+    else:
+        # Si va todo bien, devuelve el json resultante de la consulta.
         print('Result getItem:'+str(result))
         if 'Item' in result:
             return result['Item']
@@ -41,7 +50,8 @@ def get_item(key, dynamodb=None):
 def get_items(dynamodb=None):
     table = get_table(dynamodb)
     # fetch todo from the database
-    result = table.scan() #Obtiene todos los elementos de la tabla local-TodosDynamoDbTable
+    # Obtiene todos los elementos de la tabla local-TodosDynamoDbTable
+    result = table.scan()
     return result['Items']
 
 
@@ -58,11 +68,13 @@ def put_item(text, dynamodb=None):
     }
     try:
         # write the todo to the database
-        table.put_item(Item=item) #Inserta un nuevo elemento en la tabla
+        # Inserta un nuevo elemento en la tabla
+        table.put_item(Item=item)
         # create a response
+        # Volcamos el item pasado a la base de datos.
         response = {
             "statusCode": 200,
-            "body": json.dumps(item) #Volcamos el item pasado a la base de datos.
+            "body": json.dumps(item)
         }
 
     except ClientError as e:
@@ -76,7 +88,7 @@ def update_item(key, text, checked, dynamodb=None):
     timestamp = int(time.time() * 1000)
     # update the todo in the database
     try:
-        result = table.update_item( #
+        result = table.update_item(
             Key={
                 'id': key
             },
