@@ -9,30 +9,30 @@ from botocore.exceptions import ClientError
 
 def get_table(dynamodb=None):
     if not dynamodb:
-        URL = os.environ['ENDPOINT_OVERRIDE']
+        URL = os.environ['ENDPOINT_OVERRIDE'] #Recoge la url desde localEnvironment.json
         if URL:
             print('URL dynamoDB:'+URL)
-            boto3.client = functools.partial(boto3.client, endpoint_url=URL)
+            boto3.client = functools.partial(boto3.client, endpoint_url=URL) #fija el parámetro endpoint_url cuando se llame a boto3.client para no tener que pasársela cada vez
             boto3.resource = functools.partial(boto3.resource,
-                                               endpoint_url=URL)
+                                               endpoint_url=URL)  #fija la url cuando se llame a boto3.resource 
         dynamodb = boto3.resource("dynamodb")
     # fetch todo from the database
-    table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
+    table = dynamodb.Table(os.environ['DYNAMODB_TABLE']) #Recoge la tabla especificada en localEnvironment.json
     return table
 
 
 def get_item(key, dynamodb=None):
-    table = get_table(dynamodb)
-    try:
+    table = get_table(dynamodb) #Obtiene la tabla "local-TodosDynamoDbTable"
+    try: #Recoge el item solicitado por parámetro.
         result = table.get_item(
             Key={
                 'id': key
             }
         )
 
-    except ClientError as e:
+    except ClientError as e: #Si casca devuelve el error.
         print(e.response['Error']['Message'])
-    else:
+    else: #Si va todo bien, devuelve el json resultante de la consulta.
         print('Result getItem:'+str(result))
         if 'Item' in result:
             return result['Item']
@@ -41,7 +41,7 @@ def get_item(key, dynamodb=None):
 def get_items(dynamodb=None):
     table = get_table(dynamodb)
     # fetch todo from the database
-    result = table.scan()
+    result = table.scan() #Obtiene todos los elementos de la tabla local-TodosDynamoDbTable
     return result['Items']
 
 
@@ -58,11 +58,11 @@ def put_item(text, dynamodb=None):
     }
     try:
         # write the todo to the database
-        table.put_item(Item=item)
+        table.put_item(Item=item) #Inserta un nuevo elemento en la tabla
         # create a response
         response = {
             "statusCode": 200,
-            "body": json.dumps(item)
+            "body": json.dumps(item) #Volcamos el item pasado a la base de datos.
         }
 
     except ClientError as e:
@@ -76,7 +76,7 @@ def update_item(key, text, checked, dynamodb=None):
     timestamp = int(time.time() * 1000)
     # update the todo in the database
     try:
-        result = table.update_item(
+        result = table.update_item( #
             Key={
                 'id': key
             },
