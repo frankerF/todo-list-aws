@@ -64,11 +64,26 @@ sam deploy template.yaml --config-env prod
 
 A continuación se describen los comandos/acciones a realizar para poder probar la aplicación en local:
 ```bash
-## Crear red de docker
+## Crear red de docker 
+## Hay que hacerlo sólo una vez. En las siguientes sesiones ya estará disponible.
+## Crea una red bridge llamada "sam" para poder comunicarnos con el contenedor de docker.
 docker network create sam
 
 ## Levantar el contenedor de dynamodb en la red de sam con el nombre de dynamodb
+## Hay que hacerlo sólo una vez. En las siguientes sesiones ya estará disponible.
+## Carga una imagen de dynamodb especificando -p <puerto externo>:<puerto interno> , la red que vamos a usar y el nombre del contenedor. 
 docker run -p 8000:8000 --network sam --name dynamodb -d amazon/dynamodb-local
+
+## Una vez que el contenedor está levantado, no es necesario volverlo a levantar.
+## Para comprobar si ya existe se pregunta por todos los contenedores del sistema:
+docker ps -a
+## Esto nos dirá si ya existe y su estado. Si está en ejecución o parado.
+## En caso de que exista y esté con STATUS "Exited", se podrá iniciar de nuevo con la siguiente instrucción:
+docker start dynamodb
+## Comprobaremos de nuevo que el STATUS sea "Up"
+
+## Tanto si se ha creado como si se ha vuelto a levantar, la base de datos estará vacía y habrá que 
+## Crear de nuevo la tabla.
 
 ## Crear la tabla en local, para poder trabajar localmemte
 aws dynamodb create-table --table-name local-TodosDynamoDbTable --attribute-definitions AttributeName=id,AttributeType=S --key-schema AttributeName=id,KeyType=HASH --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 --endpoint-url http://localhost:8000 --region us-east-1

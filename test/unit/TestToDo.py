@@ -8,7 +8,8 @@ import json
 
 @mock_dynamodb
 class TestDatabaseFunctions(unittest.TestCase):
-    def setUp(self):
+    #Éste método se llama antes de cada prueba pues asumimos que la base de datos está vacía.
+    def setUp(self):  
         print ('---------------------')
         print ('Start: setUp')
         warnings.filterwarnings(
@@ -24,17 +25,20 @@ class TestDatabaseFunctions(unittest.TestCase):
             category=DeprecationWarning,
             message="Using or importing.*")
         """Create the mock database and table"""
-        self.dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+        #Crea la base de datos e inicializa ciertas variables para su uso (uuid, text...)
+        self.dynamodb = boto3.resource('dynamodb', region_name='us-east-1') 
         self.is_local = 'true'
         self.uuid = "123e4567-e89b-12d3-a456-426614174000"
         self.text = "Aprender DevOps y Cloud en la UNIR"
 
         from src.todoList import create_todo_table
-        self.table = create_todo_table(self.dynamodb)
+        #Crea la tabla todos
+        self.table = create_todo_table(self.dynamodb)  
         #self.table_local = create_todo_table()
         print ('End: setUp')
 
-    def tearDown(self):
+    #Éste método se llama después de terminar la prueba, sea exitosa o no, para limpiar la base de datos.
+    def tearDown(self): 
         print ('---------------------')
         print ('Start: tearDown')
         """Delete mock database and table after test is run"""
@@ -44,6 +48,7 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.dynamodb = None
         print ('End: tearDown')
 
+    
     def test_table_exists(self):
         print ('---------------------')
         print ('Start: test_table_exists')
