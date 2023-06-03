@@ -23,7 +23,7 @@ Globals:
     Environment:
       Variables:
         DYNAMODB_TABLE: !Ref TodosDynamoDbTable
-        ENDPOINT_OVERRIDE: ""
+        ENDPOINT_OVERRIDE: "http://dynamodb:8000"
     
 Resources:
   
