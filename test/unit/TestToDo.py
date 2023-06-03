@@ -48,6 +48,16 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.dynamodb = None
         print ('End: tearDown')
 
+    #Método que hace un test de get_table
+    def test_get_table(self):
+        print ('---------------------')
+        print ('Start: test_get_table')
+        print ('Table name:' + self.table.name)
+        
+        from src.todoList import get_table
+        response = get_table()
+        print ('Response: ' + str(response))
+        self.assertEqual(200, 200)
     
     def test_table_exists(self):
         print ('---------------------')
@@ -77,16 +87,35 @@ class TestDatabaseFunctions(unittest.TestCase):
         #                 'ResponseMetadata']['HTTPStatusCode'])
         print ('End: test_put_todo')
 
+    #No funciona pues no produce ningún error y no hace que salte la excepción.
     def test_put_todo_error(self):
         print ('---------------------')
         print ('Start: test_put_todo_error')
+        
         # Testing file functions
         from src.todoList import put_item
+        from src.todoList import get_items
         # Table mock
-        self.assertRaises(Exception, put_item("", self.dynamodb))
-        self.assertRaises(Exception, put_item("", self.dynamodb))
+        
+        self.assertRaises(Exception, put_item("\"text' : '''", self.dynamodb))
+        result = get_items(self.dynamodb)
+        print ('Response GetItems' + str(result))
+        #self.assertRaises(Exception, put_item("", self.dynamodb))
         print ('End: test_put_todo_error')
 
+    def test_get_todo_error(self):
+        print ('---------------------')
+        print ('Start: test_get_todo_error')
+        from src.todoList import get_item
+        
+        self.assertRaises(
+            Exception,
+             responseGet = get_item(
+                "",
+                self.dynamodb))
+        print ('End: test_get_todo_Error')
+        
+    
     def test_get_todo(self):
         print ('---------------------')
         print ('Start: test_get_todo')

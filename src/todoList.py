@@ -19,7 +19,7 @@ def get_table(dynamodb=None):
             # fija la url cuando se llame a boto3.resource
             boto3.resource = functools.partial(boto3.resource,
                                                endpoint_url=URL)
-        dynamodb = boto3.resource("dynamodb")
+        dynamodb = boto3.resource("dynamodb", region_name='us-east-1')
     # fetch todo from the database
     # Recoge la tabla especificada en localEnvironment.json
     table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
