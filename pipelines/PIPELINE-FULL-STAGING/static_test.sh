@@ -3,14 +3,14 @@
 source todo-list-aws/bin/activate
 set -x
 
-RAD_ERRORS=$(radon cc src -nc | wc -l)
+RAD_ERRORS=$(radon cc src -nb | wc -l)
 
 if [[ $RAD_ERRORS -ne 0 ]]
 then
     echo 'Ha fallado el análisis estatico de RADON - CC'
     exit 1
 fi
-RAD_ERRORS=$(radon mi src -nc | wc -l)
+RAD_ERRORS=$(radon mi src -nb | wc -l)
 if [[ $RAD_ERRORS -ne 0 ]]
 then
     echo 'Ha fallado el análisis estatico de RADON - MI'
