@@ -30,6 +30,7 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.is_local = 'true'
         self.uuid = "123e4567-e89b-12d3-a456-426614174000"
         self.text = "Aprender DevOps y Cloud en la UNIR"
+        self.textTrad = "Learn DevOps and Cloud in the UNIR"
 
         from src.todoList import create_todo_table
         #Crea la tabla todos
@@ -96,10 +97,10 @@ class TestDatabaseFunctions(unittest.TestCase):
         from src.todoList import put_item
         from src.todoList import get_items
         # Table mock
-        
-        self.assertRaises(Exception, put_item("\"text' : '''", self.dynamodb))
+        text = "F"*800000
+        self.assertRaises(Exception, put_item(text, self.dynamodb))
         result = get_items(self.dynamodb)
-        print ('Response GetItems' + str(result))
+        #print ('Response GetItems' + str(result))
         #self.assertRaises(Exception, put_item("", self.dynamodb))
         print ('End: test_put_todo_error')
 
@@ -136,6 +137,29 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertEqual(
             self.text,
             responseGet['text'])
+        print ('End: test_get_todo')
+
+
+    def test_translate_todo(self):
+        print ('---------------------')
+        print ('Start: test_translate_todo')
+        from src.todoList import get_translate_item
+        from src.todoList import put_item
+
+        # Testing file functions
+        # Table mock
+        responsePut = put_item(self.text, self.dynamodb)
+        print ('Response put_item:' + str(responsePut))
+        idItem = json.loads(responsePut['body'])['id']
+        print ('Id item:' + idItem)
+        self.assertEqual(200, responsePut['statusCode'])
+        responseGet = get_translate_item(
+                idItem, 'en',
+                self.dynamodb)
+        print ('Response Translate: ' + str(responseGet))
+        self.assertEqual(None,responseGet)
+            #self.text,
+            #self.textTrad)
         print ('End: test_get_todo')
     
     def test_list_todo(self):

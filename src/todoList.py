@@ -42,17 +42,39 @@ def get_item(key, dynamodb=None):
         print(e.response['Error']['Message'])
     else:
         # Si va todo bien, devuelve el json resultante de la consulta.
-        print('Result getItem:'+str(result))
+        print('Result getItem: '+str(result['Item']))
         if 'Item' in result:
             return result['Item']
 
-
+def get_translate_item(key, language, dynamodb=None):
+    translateClient = boto3.client('translate', region_name='us-east-1')
+    table = get_table(dynamodb)
+    try:
+        # Recoge el item solicitado por parámetro.
+        result = table.get_item(
+            Key={
+                'id': key
+            }
+        )
+        print("Palabra enviada a translate: " + result['Item']['text']+"\n")
+        print("Parámetro language: " + language)
+        #itemTranslated = translateClient.translate_text(Text = result['Item'], SourceLanguageCode='es', TargetLanguageCode = language)
+        itemTranslated = translateClient.translate_text(Text=result['Item']['text'], SourceLanguageCode="es", TargetLanguageCode = language)
+        print("Después de llamar al cliente de itemTranslated\n")
+    except ClientError as e:
+        print("ClientError: "+str(e.response))
+    else:    
+        print('Result translateItem:'+str(itemTranslated['TranslatedText']))
+        return result
+        
 def get_items(dynamodb=None):
     table = get_table(dynamodb)
     # fetch todo from the database
     # Obtiene todos los elementos de la tabla local-TodosDynamoDbTable
     result = table.scan()
     return result['Items']
+
+
 
 
 def put_item(text, dynamodb=None):
