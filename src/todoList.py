@@ -42,7 +42,6 @@ def get_item(key, dynamodb=None):
         print(e.response['Error']['Message'])
     else:
         # Si va todo bien, devuelve el json resultante de la consulta.
-        print('Result getItem: '+str(result['Item']))
         if 'Item' in result:
             return result['Item']
 
