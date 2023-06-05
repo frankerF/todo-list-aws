@@ -62,7 +62,6 @@ def get_translate_item(key, language, dynamodb=None):
             Text=result['Item']['text'],
             SourceLanguageCode="es",
             TargetLanguageCode=language)
-        print("Después de llamar al cliente de itemTranslated\n")
     except ClientError as e:
         print("ClientError: "+str(e.response))
     else:

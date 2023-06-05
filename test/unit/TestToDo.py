@@ -50,15 +50,15 @@ class TestDatabaseFunctions(unittest.TestCase):
         print ('End: tearDown')
 
     #Método que hace un test de get_table
-    # def test_get_table(self):
-    #     print ('---------------------')
-    #     print ('Start: test_get_table')
-    #     print ('Table name:' + self.table.name)
+    def test_get_table(self):
+        print ('---------------------')
+        print ('Start: test_get_table')
+        print ('Table name:' + self.table.name)
         
-    #     from src.todoList import get_table
-    #     response = get_table()
-    #     print ('Response: ' + str(response))
-    #     self.assertEqual(200, 200)
+        from src.todoList import get_table
+        response = get_table()
+        print ('Response: ' + str(response))
+        self.assertEqual(200, 200)
     
     def test_table_exists(self):
         print ('---------------------')
