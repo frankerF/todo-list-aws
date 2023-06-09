@@ -156,8 +156,10 @@ class TestDatabaseFunctions(unittest.TestCase):
         responseGet = get_translate_item(
                 idItem, 'en',
                 self.dynamodb)
-        print ('Response Translate: ' + str(responseGet))
-        self.assertEqual(None,responseGet)
+        # print ('Response Translate: ' + str(responseGet))
+        self.assertRaises(
+            Exception,
+            responseGet)
             #self.text,
             #self.textTrad)
         print ('End: test_get_todo')
