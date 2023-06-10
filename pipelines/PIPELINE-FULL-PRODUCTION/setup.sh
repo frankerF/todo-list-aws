@@ -7,6 +7,6 @@ python -m pip install --upgrade pip
 python -m pip install awscli
 #python -m pip install aws-sam-cli
 # For integration testing
-#python -m pip install pytest
-python -m pip install pytest==7.2.0
+python -m pip install pytest
+
 pwd
