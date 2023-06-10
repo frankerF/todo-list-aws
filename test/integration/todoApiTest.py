@@ -227,7 +227,7 @@ class TestApi(unittest.TestCase):
         print('Response Translate Todo: '+ str(json_response))
         #No tenemos permiso para usar este servicio.
         self.assertEqual(
-            response.status_code, 403, "Error en la petición API a {url}"
+            response.status_code, 200, "Error en la petición API a {url}"
         )
         self.assertIsNone(
             # json_response['text'], "Exemple de texte d'intégration - traduire", "Error en la petición API a {url}"
